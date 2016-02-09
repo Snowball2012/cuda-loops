@@ -1,0 +1,37 @@
+#!/bin/sh
+
+export dvmdir='/home/snowball/current-trunk/dvm_sys'
+
+# One can customize compiler options
+# export CC='mpicc -O3 -fopenmp' # C compiler
+# export CXX='mpicxx -O3 -fopenmp' # C++ compiler
+export FORT='mpif77 -O3 -fopenmp -L/usr/lib' # Fortran compiler
+# export NVCC='/usr/lib/nvidia-cuda-toolkit/bin/nvcc -arch=sm_20 -DCUDA_FERMI_ARCH -O3' # NVIDIA CUDA C++ compiler
+
+# One can add libraries (additional linker flags)
+# export ADD_LIBS=''
+
+# DVMH options
+# export DVMH_PPN='' # Number of processes per node
+# export DVMH_NUM_THREADS='' # Number of CPU threads per process
+# export DVMH_NUM_CUDAS='' # Number of GPUs per process
+# export DVMH_CPU_PERF='' # Performance of all cores of CPU per process
+# export DVMH_CUDAS_PERF='' # Performance of each GPU per device
+
+# Debugging options
+# export DVMH_LOGLEVEL=4 # Levels of debugging: 1 - errors only, 2 - warning, 3 - info, 4 - debug, 5 - trace
+# export DVMH_LOGFILE='dvmh_%d.log' # Log file name for each process
+# export DVMH_COMPARE_DEBUG=1 # An alternative way to turn comparative debugging mode on
+# export dvmsave=1 # Save convertation results
+# export dvmshow=1 # Show executed commands
+
+### Options below are likely to be removed ###
+
+# CUDA profiling options
+# export CUDA_PROFILE=0 # Enable/disable CUDA profiling
+# export CUDA_PROFILE_CONFIG='cuda.conf' # File with GPU's metrics
+# export CUDA_PROFILE_LOG='cuda_profile.%d.%p' # Output file name for each process
+# export CUDA_PROFILE_CSV=1 # Set CSV output format
+
+"$dvmdir/bin/dvm_drv" "$@"
+exit $?

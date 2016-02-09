@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\MDLoopInfo.cpp" />
+    <ClCompile Include="src\PragmaHandling.cpp" />
+    <ClCompile Include="src\handler-gen\AcrossGen.cpp" />
+    <ClCompile Include="src\handler-gen\NoAcrossGen.cpp" />
+    <ClCompile Include="src\dvm\pragmas.cpp" />
+    <ClCompile Include="src\TokenDB.cpp" />
+    <ClCompile Include="src\handler-gen\HandlerGen.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\MDLoopInfo.h" />
+    <ClInclude Include="src\PragmaHandling.h" />
+    <ClInclude Include="src\handler-gen\AcrossGen.h" />
+    <ClInclude Include="src\handler-gen\NoAcrossGen.h" />
+    <ClInclude Include="src\dvm\pragmas.h" />
+    <ClInclude Include="src\TokenDB.h" />
+    <ClInclude Include="src\handler-gen\HandlerGen.h" />
+  </ItemGroup>
+</Project>
