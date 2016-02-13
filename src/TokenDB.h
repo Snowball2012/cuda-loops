@@ -37,7 +37,7 @@ private:
 
 struct VarStr
 {
-	VarStr(const std::string& a_name, const std::string& a_type, std::shared_ptr<TokenDB>& db) : type(a_type)
+	VarStr(const std::string& a_name, const std::string& a_type, std::shared_ptr<TokenDB>& db) : type(a_type), old_name(a_name)
 	{
 		if (db)
 			name = db->GetUniqueToken(a_name);
@@ -45,5 +45,6 @@ struct VarStr
 			name = a_name;
 	}
 	std::string name;
+	std::string old_name;
 	std::string type;
 };

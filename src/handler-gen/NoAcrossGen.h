@@ -35,7 +35,7 @@ class NoAcrossGen: public HandlerGen
 
 public:
 
-    explicit  NoAcrossGen(PragmaHandlerStub * pragma, clang::ASTContext * ctx, clang::FunctionDecl * f, std::shared_ptr<TokenDB>& token_db)
+    explicit  NoAcrossGen(PragmaHandlerStub * pragma, clang::ASTContext * ctx, clang::FunctionDecl * f, const std::shared_ptr<TokenDB>& token_db)
         :HandlerGen( pragma, ctx, f, token_db )
     {
     }
@@ -43,8 +43,6 @@ public:
 	virtual std::string GenerateHandler() override;
 
     virtual std::string GenKernel() override;
-
-	virtual bool VisitStmt(clang::Stmt * st) override;
 
 };
 

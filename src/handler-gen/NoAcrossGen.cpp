@@ -27,9 +27,9 @@ string NoAcrossGen::GenerateHandler()
     
 
     handlerTxt.append("extern \"C\" void " + func_name + "_cuda(");
-    handlerTxt.append("DvmType *pLoopRef, ");	
+    handlerTxt.append("DvmType *pLoopRef");
     for (const auto & hdr : arr_hdrs) {
-        handlerTxt.append( hdr.type + " " + hdr.name + "[]");
+        handlerTxt.append( ", " + hdr.type + " " + hdr.name + "[]");
     }
     for (const auto & hdr : sclr_hdrs) {
         handlerTxt.append(", " + hdr.type + " " + hdr.name + "[]");
@@ -79,8 +79,8 @@ string NoAcrossGen::GenerateHandler()
     handlerTxt.append("    cudaStream_t stream;\n\n");
 
     handlerTxt.append("    /* Get CUDA configuration parameters */\n");
-    handlerTxt.append("    extern DvmType " + func_name + "_cuda_kernel_regs;\n");
-    handlerTxt.append("    dvmh_loop_cuda_get_config_C(loop_ref, 0, " + func_name + "_cuda_kernel_regs,\n" +
+    handlerTxt.append("    extern DvmType " + func_name + "_cuda_kernel_int_regs;\n");
+    handlerTxt.append("    dvmh_loop_cuda_get_config_C(loop_ref, 0, " + func_name + "_cuda_kernel_int_regs,\n" +
                       "        &threads, &stream, 0);\n\n");
 
     handlerTxt.append("    /* Calculate computation distribution parameters */\n");
@@ -185,12 +185,12 @@ string NoAcrossGen::GenKernel()
 
     for (auto i = 0; i < arrs.size(); ++i) {
         string name = arr_bases[i].name;
-		string hdr = arr_hdrs[i].name;
+        string hdr = arr_hdrs[i].name;
         string type = arr_bases[i].type;
-		string hdr_type = arr_hdrs[i].type;
-        kernelTxt += type + " " + name + ", ";
+        string hdr_type = arr_hdrs[i].type;
+        kernelTxt += arrs[i].type + " " + arrs[i].name + "[], ";
         for (int j = 1; j <= loopDims; j++)
-            kernelTxt += hdr_type + " " + hdr + to_string(j) +", ";
+            kernelTxt += hdr_type + " " + hdr + to_string(j) + ", ";
     }
     for (auto i = sclr_ptrs.begin(); i != sclr_ptrs.end(); ++i) {
         kernelTxt += (*i).type + " " + (*i).name + ", ";
@@ -213,10 +213,10 @@ string NoAcrossGen::GenKernel()
     kernelTxt += "DvmType blockOffset)\n";
     kernelTxt += "{\n";
 
-    for (auto i = arr_bases.begin(); i != arr_bases.end(); ++i) {
-        string name = (*i).name;
-        string type = (*i).type;
-        kernelTxt += "    " + type + " " + name + " = " + name + ";\n";
+    for (auto i = 0; i < arrs.size(); i++) {
+        string name = arr_bases[i].name;
+        string type = arr_bases[i].type;
+        kernelTxt += "    " + type + " " + name + " = " + arrs[i].name + ";\n";
     }
 
     for (auto i = 0; i < sclrs.size(); ++i) {
@@ -303,55 +303,4 @@ string NoAcrossGen::GenKernel()
     kernelTxt += "}\n";
 
     return kernelTxt;
-}
-
-
-bool NoAcrossGen::VisitStmt(Stmt * st)
-{
-    if (find(visitedNodes.begin(), visitedNodes.end(), st) == visitedNodes.end()) {
-        // looking for indexation
-        // note: perhaps it's better to keep visitedNodes sorted
-        if (isa<CompoundStmt>(st)) {
-            CompoundStmt * cs = static_cast<CompoundStmt *>(st);
-            loopRange = cs->getSourceRange();
-        }
-        if (isa<ArraySubscriptExpr>(st)) {
-            SourceRange subRange;
-            vector<Expr *> subs;
-            subRange.setEnd(st->getLocEnd());
-            do {
-                visitedNodes.push_back(st);
-                ArraySubscriptExpr *arSt = static_cast<ArraySubscriptExpr *>(st);
-                Expr * sub = arSt->getRHS();
-                subs.push_back(sub);
-                st = arSt->getLHS();
-                subRange.setBegin(st->getLocEnd());
-                if (isa<ImplicitCastExpr>(st))
-                    st = static_cast<ImplicitCastExpr *>(st)->getSubExpr();
-            } while (isa<ArraySubscriptExpr>(st));
-
-            reverse(subs.begin(), subs.end());
-
-            string base = "";
-            if (isa<DeclRefExpr>(st)) {
-                base = rw.ConvertToString(st);
-                if (find(pragma->dvmArrays.begin(), pragma->dvmArrays.end(), base) == pragma->dvmArrays.end())
-                    return true;
-            }
-            string idxRepl;
-            idxRepl.clear();
-            idxRepl += base + "[";
-            int j = 1;
-            for (auto i = subs.begin(); i != subs.end(); ++i, ++j) {
-                string curSub;
-                curSub = "(" + rw.ConvertToString(*i) + ")*(" + base + "_hdr" + to_string(j) + ")";
-                if (j != 1)
-                    idxRepl += " + ";
-                idxRepl += curSub;
-            }
-            idxRepl += "]";
-            rw.ReplaceText(subRange, idxRepl);
-        }
-    }
-    return true;
 }

@@ -1,5 +1,6 @@
 #include "TokenDB.h"
 
+#include <exception>
 #include <boost/lexical_cast.hpp>
 
 using std::string;
@@ -44,7 +45,7 @@ string TokenDB::GetNewNameForToken(const string& token)
 			break;
 		}
 		if (m_cur_id >=  max_token_num) // extremely unlikely this will ever happen
-			throw std::exception("Too many tokens in TokenDB");
+			throw std::exception();
 	}
 
 	return res;

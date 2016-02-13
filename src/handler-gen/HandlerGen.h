@@ -17,6 +17,7 @@
 #include <clang/Tooling/CommonOptionsParser.h>
 #include <clang/Tooling/Tooling.h>
 #include <clang/Rewrite/Core/Rewriter.h>
+#include <clang/AST/Type.h>
 #pragma warning(pop)
 
 #include <PragmaHandling.h>
@@ -55,7 +56,7 @@ protected:
 
 public:
 
-	explicit  HandlerGen(PragmaHandlerStub * pragma, clang::ASTContext * ctx, clang::FunctionDecl * f, std::shared_ptr<TokenDB>& token_db)
+	explicit  HandlerGen(PragmaHandlerStub * pragma, clang::ASTContext * ctx, clang::FunctionDecl * f, const std::shared_ptr<TokenDB>& token_db)
 		:loopInfo(*pragma, f), rw(ctx->getSourceManager(), ctx->getLangOpts()), m_token_db(token_db)
 	{
 		this->pragma = pragma;
@@ -70,10 +71,14 @@ public:
 
 	virtual std::string GenKernel() = 0;
 
-	virtual bool VisitStmt(clang::Stmt * st) = 0;
+	virtual bool VisitStmt(clang::Stmt * st);
 
 private:
 	void GenNames();
+
+protected:
+	int GetIndexBySclr(std::string & str);
+	int GetIndexByArr(std::string & str);
 
 };
 

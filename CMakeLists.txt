@@ -28,8 +28,19 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I${LLVMSRCROOT}/tools/clang/include -I$
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LLVMLDFLAGS} -ltinfo")
 
-set(SOURCE_FILES src/main.cpp src/PragmaHandling.cpp src/dvm/pragmas.cpp src/MDLoopInfo.cpp)
-add_executable(diploma_prototype ${SOURCE_FILES} src/handler-gen/NoAcrossGen.cpp src/handler-gen/NoAcrossGen.h src/handler-gen/AcrossGen.cpp src/handler-gen/AcrossGen.h)
+set(SOURCE_FILES
+		src/main.cpp
+		src/PragmaHandling.cpp
+		src/dvm/pragmas.cpp
+		src/MDLoopInfo.cpp
+		src/handler-gen/NoAcrossGen.cpp
+		src/handler-gen/NoAcrossGen.h
+		src/handler-gen/AcrossGen.cpp
+		src/handler-gen/AcrossGen.h
+        src/handler-gen/HandlerGen.cpp
+        src/TokenDB.cpp)
+
+add_executable(diploma_prototype ${SOURCE_FILES})
 
 
 #set include dirs

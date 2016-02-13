@@ -17,6 +17,7 @@
 #include <vector>
 #include <algorithm>
 #include <tuple>
+#include <memory>
 
 #include <clang/Lex/Lexer.h>
 #include <clang/Driver/Options.h>
